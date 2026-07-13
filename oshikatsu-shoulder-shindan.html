@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>推し活ショルダー カラー診断</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800;900&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pink-bg-1:#FFE3EE;
+    --pink-bg-2:#FFF3F7;
+    --hot:#FF4F91;
+    --hot-deep:#E8296F;
+    --plum:#4A2438;
+    --purple:#8C5CD1;
+    --gold:#F2B84B;
+    --card:#FFFFFF;
+    --line:#FFD3E4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Zen Maru Gothic','Hiragino Sans',sans-serif;
+    background:
+      radial-gradient(circle at 15% 8%, #FFD0E4 0%, transparent 40%),
+      radial-gradient(circle at 90% 85%, #FFC9E0 0%, transparent 45%),
+      linear-gradient(160deg, var(--pink-bg-1), var(--pink-bg-2));
+    min-height:100vh;
+    color:var(--plum);
+    display:flex;
+    justify-content:center;
+    padding:28px 14px 60px;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+  }
+  .brand{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .brand .logo{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:900;
+    font-size:15px;
+    letter-spacing:.12em;
+    color:var(--hot-deep);
+  }
+  .brand .logo::before, .brand .logo::after{content:"✦"; margin:0 6px; opacity:.6;}
+
+  .progress{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .dot{
+    width:34px; height:7px; border-radius:6px;
+    background:#FFCBE1;
+    transition:.3s;
+  }
+  .dot.done{background:var(--hot);}
+  .dot.current{background:var(--purple);}
+
+  .card{
+    background:var(--card);
+    border-radius:26px;
+    padding:30px 22px 26px;
+    box-shadow:0 18px 40px -18px rgba(232,41,111,.35);
+    position:relative;
+    overflow:hidden;
+    animation:pop .35s ease;
+  }
+  @keyframes pop{ from{opacity:0; transform:translateY(10px) scale(.98);} to{opacity:1; transform:translateY(0) scale(1);} }
+  .card::before{
+    content:"";
+    position:absolute; top:-40px; right:-40px;
+    width:120px; height:120px; border-radius:50%;
+    background:radial-gradient(circle, #FFE1EE 0%, transparent 70%);
+  }
+
+  .step-label{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:800;
+    font-size:12px;
+    color:var(--purple);
+    letter-spacing:.08em;
+    margin-bottom:6px;
+  }
+  h1.question{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:900;
+    font-size:22px;
+    line-height:1.45;
+    color:var(--plum);
+    margin-bottom:4px;
+    position:relative;
+  }
+  .sub{
+    font-size:12.5px;
+    color:#9A7186;
+    margin-bottom:20px;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .opt{
+    text-align:left;
+    border:2px solid var(--line);
+    background:#FFFAFC;
+    border-radius:16px;
+    padding:14px 16px;
+    font-size:15px;
+    font-weight:700;
+    color:var(--plum);
+    cursor:pointer;
+    transition:.15s;
+    font-family:inherit;
+  }
+  .opt:hover{
+    border-color:var(--hot);
+    background:#FFF0F6;
+    transform:translateX(3px);
+  }
+  .opt:active{transform:scale(.98);}
+
+  .start-wrap{ text-align:center; padding-top:6px; }
+  .start-wrap h1{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:900;
+    font-size:26px;
+    line-height:1.5;
+    background:linear-gradient(90deg, var(--hot-deep), var(--purple));
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    margin-bottom:12px;
+  }
+  .start-wrap p{
+    font-size:13.5px;
+    color:#8B6478;
+    margin-bottom:22px;
+    line-height:1.7;
+  }
+  .btn-main{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:800;
+    font-size:16px;
+    border:none;
+    color:#fff;
+    background:linear-gradient(90deg, var(--hot), var(--hot-deep));
+    padding:15px 0;
+    width:100%;
+    border-radius:999px;
+    box-shadow:0 12px 24px -10px rgba(232,41,111,.6);
+    cursor:pointer;
+  }
+  .btn-main:active{transform:scale(.98);}
+
+  /* result */
+  .result-badge{
+    font-family:'M PLUS Rounded 1c';
+    font-size:12px; font-weight:800;
+    color:var(--hot-deep);
+    background:#FFE3EE;
+    display:inline-block;
+    padding:5px 14px;
+    border-radius:999px;
+    margin-bottom:14px;
+  }
+  .result-title{
+    font-family:'M PLUS Rounded 1c';
+    font-weight:900;
+    font-size:20px;
+    margin-bottom:20px;
+  }
+  .swatch-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:#FFF6FA;
+    border-radius:18px;
+    padding:16px;
+    margin-bottom:12px;
+  }
+  .swatch{
+    width:52px; height:52px; border-radius:50%;
+    border:3px solid #fff;
+    box-shadow:0 0 0 2px var(--line), 0 6px 14px -6px rgba(0,0,0,.25);
+    flex-shrink:0;
+  }
+  .swatch-info .label{ font-size:11px; color:#B37E96; font-weight:700; margin-bottom:2px;}
+  .swatch-info .value{ font-family:'M PLUS Rounded 1c'; font-weight:800; font-size:17px;}
+
+  .info-row{
+    display:flex; justify-content:space-between; align-items:center;
+    background:#FFF6FA;
+    border-radius:18px;
+    padding:14px 16px;
+    margin-bottom:12px;
+  }
+  .info-row .label{ font-size:12px; color:#B37E96; font-weight:700;}
+  .info-row .value{ font-family:'M PLUS Rounded 1c'; font-weight:800; font-size:15px;}
+  .pill{
+    font-size:12px; font-weight:800; padding:4px 12px; border-radius:999px;
+  }
+  .pill.yes{ background:#DFF5E8; color:#2E8B57;}
+  .pill.no{ background:#F2E8E8; color:#9A6060;}
+
+  .order-box{
+    background:var(--plum);
+    color:#FFE3EE;
+    border-radius:18px;
+    padding:16px;
+    font-size:12.5px;
+    line-height:1.9;
+    white-space:pre-wrap;
+    margin:18px 0 14px;
+    position:relative;
+    font-family:'Zen Maru Gothic';
+  }
+  .order-box strong{ color:#fff;}
+
+  .btn-copy{
+    width:100%;
+    font-family:'M PLUS Rounded 1c';
+    font-weight:800;
+    font-size:14.5px;
+    padding:13px 0;
+    border-radius:999px;
+    border:none;
+    background:linear-gradient(90deg, var(--purple), #B98BD9);
+    color:#fff;
+    cursor:pointer;
+    box-shadow:0 10px 20px -10px rgba(140,92,209,.6);
+  }
+  .btn-copy.copied{ background:linear-gradient(90deg,#2E8B57,#4FD1B5);}
+
+  .btn-restart{
+    width:100%;
+    background:none;
+    border:none;
+    color:#B37E96;
+    font-size:12.5px;
+    font-weight:700;
+    text-decoration:underline;
+    margin-top:14px;
+    cursor:pointer;
+    font-family:inherit;
+  }
+
+  .note{
+    font-size:11px;
+    color:#C79AAE;
+    margin-top:6px;
+    line-height:1.6;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="brand"><span class="logo">my pick.</span></div>
+  <div class="progress" id="progress"></div>
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+const questions = [
+  {
+    label: "STEP 1 / 5",
+    q: "担当カラーは？",
+    sub: "推しのイメージカラーを選んでね",
+    options: ["レッド・ピンク系","オレンジ・イエロー系","グリーン・カーキ系","ブルー・パープル系","ホワイト・シルバー系","ブラック・グレー系"]
+  },
+  {
+    label: "STEP 2 / 5",
+    q: "好きな色の系統は？",
+    sub: "普段よく着る色に近いものを選んでね",
+    options: ["パステル・淡色が好き","ビビッド・原色が好き","黒・白・グレーなど無彩色が好き","ベージュ・カーキなどアースカラーが好き"]
+  },
+  {
+    label: "STEP 3 / 5",
+    q: "スタイルは？",
+    sub: "自分のファッション傾向に近いものを選んでね",
+    options: ["カジュアル","フェミニン","モード・シンプル","甘辛ミックス"]
+  },
+  {
+    label: "STEP 4 / 5",
+    q: "リボンやチュールなど\nフリフリ系は好き？",
+    sub: "直感でOK！",
+    options: ["大好き♡取り入れたい派","ちょっと気になるけど挑戦したい","苦手…シンプル可愛いがいい","甘さゼロでシンプル一択"]
+  },
+  {
+    label: "STEP 5 / 5",
+    q: "どんなシーンで一番使いたい？",
+    sub: "最後の質問だよ！",
+    options: ["現場・参戦メイン","日常使い","遠征・お出かけ両方","特典会・物販列など両手を空けたいシーン"]
+  }
+];
+
+const colorMap = {
+  "レッド・ピンク系": {p:["ベビーピンク","#FFB6D1"], v:["レッド","#E8213C"], m:["ホワイト","#FFFFFF"], e:["ブラウン","#6B3A2A"]},
+  "オレンジ・イエロー系": {p:["ベージュ","#D8C3A5"], v:["オレンジ","#FF7A29"], m:["ホワイト","#FFFFFF"], e:["カーキ","#5C5B34"]},
+  "グリーン・カーキ系": {p:["ミントグリーン","#4FD1B5"], v:["グリーン","#2E8B57"], m:["グレー","#9B9B9B"], e:["カーキ","#5C5B34"]},
+  "ブルー・パープル系": {p:["ライトブルー","#6EC6E8"], v:["パープル②","#6B3FA0"], m:["グレー","#9B9B9B"], e:["ネイビー","#1B2A4A"]},
+  "ホワイト・シルバー系": {p:["ホワイト","#FFFFFF"], v:["シルバー","#C0C0C0"], m:["グレー","#9B9B9B"], e:["ベージュ","#D8C3A5"]},
+  "ブラック・グレー系": {p:["グレー","#9B9B9B"], v:["ブラックパターン","#2A2A2A"], m:["ブラック","#1A1A1A"], e:["ブロンズ","#8C6A4A"]}
+};
+const step2Key = {
+  "パステル・淡色が好き":"p",
+  "ビビッド・原色が好き":"v",
+  "黒・白・グレーなど無彩色が好き":"m",
+  "ベージュ・カーキなどアースカラーが好き":"e"
+};
+
+const optionMap = {
+  "大好き♡取り入れたい派": {"カジュアル":"リボン","フェミニン":"お花","モード・シンプル":"チュール","甘辛ミックス":"リボン"},
+  "ちょっと気になるけど挑戦したい": {"カジュアル":"ウッドビーズ","フェミニン":"お花","モード・シンプル":"チュール","甘辛ミックス":"リボン"},
+  "苦手…シンプル可愛いがいい": {"カジュアル":"ウッドビーズ","フェミニン":"パール","モード・シンプル":"ウッドビーズ","甘辛ミックス":"パール"},
+  "甘さゼロでシンプル一択": {"カジュアル":"推し活用コード","フェミニン":"推し活用コード","モード・シンプル":"推し活用コード","甘辛ミックス":"推し活用コード"}
+};
+
+let current = -1; // -1 = start screen
+let answers = [];
+
+function renderProgress(){
+  const wrap = document.getElementById('progress');
+  if(current < 0 || current >= questions.length){ wrap.innerHTML=""; return; }
+  wrap.innerHTML = questions.map((_,i)=>{
+    let cls = 'dot';
+    if(i < current) cls += ' done';
+    else if(i === current) cls += ' current';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+
+function renderStart(){
+  document.getElementById('card').innerHTML = `
+    <div class="start-wrap">
+      <div class="result-badge">推し活ショルダー</div>
+      <h1>あなたにぴったりな<br>オーダー診断</h1>
+      <p>5つの質問に答えるだけで、<br>あなたにおすすめのカラー・オプション・仕様がわかるよ♡</p>
+      <button class="btn-main" onclick="start()">診断スタート ✦</button>
+    </div>
+  `;
+}
+
+function start(){ current = 0; answers = []; renderQuestion(); }
+
+function renderQuestion(){
+  renderProgress();
+  const q = questions[current];
+  document.getElementById('card').innerHTML = `
+    <div class="step-label">${q.label}</div>
+    <h1 class="question">${q.q.replace(/\n/g,'<br>')}</h1>
+    <div class="sub">${q.sub}</div>
+    <div class="options">
+      ${q.options.map(o=>`<button class="opt" onclick="choose('${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}
+    </div>
+  `;
+}
+
+function choose(opt){
+  answers[current] = opt;
+  current++;
+  if(current < questions.length){ renderQuestion(); }
+  else { renderResult(); }
+}
+
+function renderResult(){
+  document.getElementById('progress').innerHTML = "";
+  const [step1, step2, step3, step4, step5] = answers;
+
+  const colorPair = colorMap[step1][step2Key[step2]];
+  const colorName = colorPair[0];
+  const colorHex = colorPair[1];
+
+  let option = optionMap[step4][step3];
+
+  let twoWay;
+  if(option === "チュール"){
+    twoWay = false;
+  } else if(step5 === "日常使い"){
+    twoWay = step3 !== "フェミニン";
+  } else {
+    twoWay = true;
+  }
+
+  const orderText =
+`オーダーの際はDMします✎
+【カラー】${colorName}
+【オプション】${option}`;
+
+  document.getElementById('card').innerHTML = `
+    <div class="result-badge">診断結果</div>
+    <div class="result-title">あなたにぴったりの組み合わせ✦</div>
+
+    <div class="swatch-row">
+      <div class="swatch" style="background:${colorHex};"></div>
+      <div class="swatch-info">
+        <div class="label">おすすめのカラー</div>
+        <div class="value">${colorName}</div>
+      </div>
+    </div>
+
+    <div class="info-row">
+      <div class="label">おすすめオプション</div>
+      <div class="value">${option}</div>
+    </div>
+
+    <div class="order-box" id="orderBox">${orderText}</div>
+    <button class="btn-copy" id="copyBtn" onclick="copyOrder()">このテキストをコピーしてDMでオーダー</button>
+    <div class="note">※コピー後、そのままDMに貼り付けて送ってね。カラー相談も対応します♡</div>
+
+    <button class="btn-restart" onclick="renderStartFromResult()">もう一度診断する</button>
+  `;
+}
+
+function renderStartFromResult(){ current = -1; renderProgress(); renderStart(); }
+
+function copyOrder(){
+  const text = document.getElementById('orderBox').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = "コピーしました！";
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent = "このテキストをコピーしてDMでオーダー"; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+renderStart();
+</script>
+</body>
+</html>
